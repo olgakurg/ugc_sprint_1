@@ -1,0 +1,11 @@
+__pycache__/
+env/
+.env
+.vscode/
+*.log
+.env*
+chek.py
+dbdata/
+build/
+pytest_aiohttpreq_p.egg-info/
+pytest_elastic_p.egg-info/

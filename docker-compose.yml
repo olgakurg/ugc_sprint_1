@@ -1,0 +1,40 @@
+version: "3.9"
+
+services:
+  kafka1:
+    image: bitnami/kafka:latest
+    env_file:
+      - ./config/kafka/.env.kafka
+      - ./config/kafka/.env.kafka1
+    volumes:
+      - kafka_01_data:/bitnami/kafka
+
+  kafka2:
+    image: bitnami/kafka:latest
+    env_file:
+      - ./config/kafka/.env.kafka
+      - ./config/kafka/.env.kafka2
+    volumes:
+      - kafka_03_data:/bitnami/kafka
+
+  kafka3:
+    image: bitnami/kafka:latest
+    env_file:
+      - ./config/kafka/.env.kafka
+      - ./config/kafka/.env.kafka3
+
+    volumes:
+      - kafka_02_data:/bitnami/kafka
+
+  ui:
+    image: provectuslabs/kafka-ui:latest
+    ports:
+      - "8080:8080"
+    environment:
+      - KAFKA_CLUSTERS_0_BOOTSTRAP_SERVERS=kafka1:9092,@kafka2:9093,@kafka3:9093
+      - KAFKA_CLUSTERS_0_NAME=kraft
+
+volumes:
+  kafka_01_data:
+  kafka_02_data:
+  kafka_03_data:
