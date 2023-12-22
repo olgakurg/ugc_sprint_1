@@ -3,15 +3,6 @@ from datetime import datetime
 from pydantic import BaseModel
 
 
-class Instance(BaseModel):
-    user_id: str
-    event_time: datetime
-
-
-class Movie(Instance):
-    movie_id: str
-
-
 class MovieProgress(BaseModel):
     user_id: str
     event_time: datetime
@@ -20,6 +11,31 @@ class MovieProgress(BaseModel):
     movie_len: int
 
 
-class MovieResolution(Movie):
+class MovieRes(BaseModel):
+    user_id: str
+    event_time: datetime
+    movie_id: str
     old_res: str
     new_res: str
+
+
+class ClickElement(BaseModel):
+    user_id: str
+    event_time: datetime
+    element_id: str
+
+
+class FilterQuery(BaseModel):
+    user_id: str
+    event_time: datetime
+    query_param: str | None
+    genre_id: str | None
+    rating: str | None
+    actor_id: str | None
+
+
+class PageDuration(BaseModel):
+    user_id: str
+    event_time: datetime
+    page_id: str
+    duration: int
