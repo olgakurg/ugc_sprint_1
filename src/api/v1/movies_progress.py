@@ -9,13 +9,14 @@ from models import MovieProgress
 router = APIRouter()
 
 
-@router.post('movies_progress', status_code=HTTPStatus.OK)
+@router.post('/', status_code=HTTPStatus.OK)
 async def post_movie_progress(payload: MovieProgress,
                               kafka_producer: KafkaProducer = Depends(get_kafka_producer)):
     kafka_producer.send(topic=kafka_topics[MovieProgress],
                         value={'movie_progress': payload.movie_progress,
                                'movie_length': payload.movie_len,
-                               'event_time': payload.event_time},
+                               'event_time': str(payload.event_time)
+                               },
                         key=f'{payload.user_id}+{payload.movie_id}')
 
     return {'message': "OK"}

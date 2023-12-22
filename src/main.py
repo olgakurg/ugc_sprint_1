@@ -30,4 +30,4 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-app.include_router(movies_progress.router, prefix='/api/v1/films')
+app.include_router(movies_progress.router, prefix='/api/v1/movies_progress')

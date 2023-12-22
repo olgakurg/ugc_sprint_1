@@ -12,7 +12,10 @@ class Movie(Instance):
     movie_id: str
 
 
-class MovieProgress(Movie):
+class MovieProgress(BaseModel):
+    user_id: str
+    event_time: datetime
+    movie_id: str
     movie_progress: int
     movie_len: int
 
