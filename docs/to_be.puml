@@ -1,0 +1,59 @@
+@startuml
+skinparam componentStyle uml2
+actor Client as client
+actor Manager as manager
+actor Analyst as analyst
+
+package "movies service" as movies{
+    package "admin_panel" as admin{
+        component nginx as admin_nginx
+        component admin_panel as admin_panel
+        database "movies_db" as movies_db
+    }
+    package "auth_service" as auth{
+        component nginx as auth_nginx
+        component "auth_api" as auth_api
+        database "auth_db" as auth_db
+        database "auth_cache" as auth_cache
+    }
+    package "search_service" as search{
+        component nginx as search_nginx
+        component search_api as search_api
+        database ElasticSearch
+        component etl as search_etl
+    }
+    package "analytics_etl" as analytics{
+        component ugc_api as ugc_api
+        database ClickHouse
+        component kafka_etl as kafka_etl
+        component kafka as kafka
+    }
+}
+
+
+auth_api -- auth_db
+auth_api -- auth_cache
+admin_panel -- movies_db
+search_api -- ElasticSearch
+ugc_api -- kafka
+
+movies_db -> search_etl
+search_etl -> ElasticSearch
+kafka -> kafka_etl
+kafka_etl -> ClickHouse
+
+manager <--> admin_nginx : DB Administration
+manager <--> auth_nginx : LDAP Administration
+analyst <-up-> ClickHouse : Some Data
+client <--> search_nginx : User Request
+client ---> search_nginx : Click Data
+
+admin_nginx <--> admin_panel
+admin_panel <-> auth_nginx : Authentication
+search_nginx <--> search_api
+search_nginx <--> ugc_api
+search_api <-> auth_nginx : Authentication
+auth_nginx <--> auth_api
+client <-> auth_nginx : Authorization
+
+@enduml
