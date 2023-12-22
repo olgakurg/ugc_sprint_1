@@ -1,0 +1,37 @@
+'TODO порешать - по юзеру или по сессии ключи топиков, как правильно делать табл. в clickhouse
+
+@startuml
+package "api" {
+  [pydantic models]
+  [kafka service]
+}
+
+package "kafka" {
+  [topic_click]
+  [topic_page]
+  [topic_resolution]
+  [topic_time]
+  [topic_filters]
+}
+
+package "etl" {
+  [kafka_comsumer]
+  [data_transformer]
+  [clickhouse_client]
+}
+
+package "clickhouse" {
+  [click]
+  [page]
+  [time]
+  [resolution]
+  [filter]
+
+}
+
+"api" --> "kafka"
+"etl" --> "kafka"
+"etl" --> "clickhouse"
+"kafka service" --> "pydantic models"
+
+@enduml
