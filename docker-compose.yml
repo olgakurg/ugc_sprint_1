@@ -1,0 +1,67 @@
+version: "3.9"
+
+services:
+  kafka1:
+    container_name: kafka1
+    image: custom/kafka:3.6.1
+    build:
+      context: dockerfiles/kafka-build
+    ports:
+      - 29192:29192
+      - 9092:9092
+
+    volumes:
+      - ./config/kafka/kafka1/server.properties:/kafka/config/kraft/server.properties
+      - kafka1_data:/kafka-data/kraft-combined-logs
+    restart: always
+
+  kafka2:
+    container_name: kafka2
+    image: custom/kafka:3.6.1
+    build:
+      context: dockerfiles/kafka-build
+    ports:
+      - 29292:29292
+
+    volumes:
+      - ./config/kafka/kafka2/server.properties:/kafka/config/kraft/server.properties
+      - kafka2_data:/kafka-data/kraft-combined-logs
+    restart: always
+
+  kafka3:
+    container_name: kafka3
+    image: custom/kafka:3.6.1
+    build:
+      context: dockerfiles/kafka-build
+    ports:
+      - 29392:29392
+
+    volumes:
+      - ./config/kafka/kafka3/server.properties:/kafka/config/kraft/server.properties
+      - kafka3_data:/kafka-data/kraft-combined-logs
+    restart: always
+
+  ui:
+    image: provectuslabs/kafka-ui:latest
+    ports:
+      - "8080:8080"
+    environment:
+      - KAFKA_CLUSTERS_0_BOOTSTRAP_SERVERS=kafka1:9092,@kafka2:9092,@kafka3:9092
+      - KAFKA_CLUSTERS_0_NAME=ugc
+
+  clickhouse:
+    image: clickhouse/clickhouse-server
+    user: "101:101"
+    container_name: clickhouse
+    hostname: clickhouse
+    volumes:
+      - ./config/clickhouse/config.xml:/etc/clickhouse-server/config.d/config.xml
+      - ./config/clickhouse/users.xml:/etc/clickhouse-server/users.d/users.xml
+    ports:
+      - "127.0.0.1:8123:8123"
+      - "127.0.0.1:9000:9000"
+
+volumes:
+  kafka1_data:
+  kafka2_data:
+  kafka3_data:
