@@ -9,7 +9,6 @@ from kafka3 import KafkaProducer
 from api.v1 import movies_progress, click_event, page_duration, filter_query, movie_res
 from core.config import Settings
 from db import kafka
-from db.kafka_settings import kafka_topics, create_all_topics
 
 settings = Settings()
 logging.basicConfig(level=logging.INFO, filename="ugc_log.log", filemode="w")
@@ -20,7 +19,7 @@ async def lifespan(app: FastAPI):
     kafka.producer = KafkaProducer(bootstrap_servers=f'{settings.kafka_host}:{settings.kafka_port}',
                                    value_serializer=lambda v: json.dumps(v).encode('utf-8'),
                                    key_serializer=str.encode)
-    create_all_topics(kafka_topics, settings)
+    # create_all_topics(kafka_topics, settings)
     yield
 
 
