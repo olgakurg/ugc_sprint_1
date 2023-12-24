@@ -19,6 +19,7 @@ async def lifespan(app: FastAPI):
     kafka.producer = KafkaProducer(bootstrap_servers=f'{settings.kafka_host}:{settings.kafka_port}',
                                    value_serializer=lambda v: json.dumps(v).encode('utf-8'),
                                    key_serializer=str.encode)
+    # create_all_topics(kafka_topics.values(), settings)
     yield
 
 
