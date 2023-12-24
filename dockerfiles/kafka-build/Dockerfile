@@ -17,7 +17,7 @@ RUN mkdir /tmp-download && \
 RUN mkdir /kafka-data && \
     mkdir /kafka-data/kraft-combined-logs
 
-COPY start-kafka.sh /usr/bin
+COPY start-kafka.sh /usr/bin/start-kafka.sh
 
 RUN chmod +x /usr/bin/start-kafka.sh
 
