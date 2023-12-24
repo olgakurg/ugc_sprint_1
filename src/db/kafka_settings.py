@@ -1,11 +1,10 @@
 import logging
-from typing import Dict, Type
 
+from confluent_kafka.admin import AdminClient, NewTopic
 from core.config import Settings
-from kafka3.admin import KafkaAdminClient, NewTopic
 from models import MovieProgress, MovieRes, ClickElement, FilterQuery, PageDuration
 
-kafka_topics: Dict[Type, str] = {
+kafka_topics = {
     MovieProgress: "movies_progress",
     MovieRes: "movie_resolution",
     ClickElement: "click_element",
@@ -14,13 +13,15 @@ kafka_topics: Dict[Type, str] = {
 }
 
 
-def create_topic(topic_name: str, settings: Settings) -> None:
-    admin_client = KafkaAdminClient(bootstrap_servers=f'{settings.kafka_host}:{settings.kafka_port}')
-    topic = NewTopic(name=topic_name, num_partitions=1, replication_factor=1)
-    admin_client.create_topics(new_topics=[topic], validate_only=False)
-    logging.info(f'Created topic {topic_name}')
-
-
-def create_all_topics(kafka_topics: Dict[Type, str], settings: Settings) -> None:
-    for topic_name in kafka_topics.values():
-        create_topic(topic_name, settings)
+def create_topics(settings: Settings):
+    topics = kafka_topics.values()
+    logging.info(f'trying to create topics {topics}')
+    a = AdminClient({'bootstrap.servers': '{}:{}'.format(settings.kafka_host, settings.kafka_port)})
+    new_topics = [NewTopic(topic, num_partitions=3, replication_factor=1) for topic in topics]
+    fs = a.create_topics(new_topics)
+    for topic, f in fs.items():
+        try:
+            f.result()  # The result itself is None
+            logging.info("Topic {} created".format(topic))
+        except Exception as e:
+            logging.info("Failed to create topic {}: {}".format(topic, e))
