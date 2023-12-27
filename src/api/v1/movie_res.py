@@ -13,10 +13,7 @@ router = APIRouter()
 async def post_movie_res(payload: MovieRes,
                          kafka_producer: KafkaProducer = Depends(get_kafka_producer)):
     kafka_producer.send(topic=kafka_topics[MovieRes],
-                        value={'old_res': payload.old_res,
-                               'new_res': payload.new_res,
-                               'event_time': str(payload.event_time)
-                               },
-                        key=f'{payload.user_id}+{payload.movie_id}')
+                        value=payload.get_value(),
+                        key=str(payload.get_key()))
 
     return {'message': "OK"}

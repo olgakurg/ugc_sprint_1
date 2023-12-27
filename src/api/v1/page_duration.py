@@ -13,10 +13,7 @@ router = APIRouter()
 async def post_page_view(payload: PageDuration,
                          kafka_producer: KafkaProducer = Depends(get_kafka_producer)):
     kafka_producer.send(topic=kafka_topics[PageDuration],
-                        value={
-                            'duration': payload.duration,
-                            'event_time': str(payload.event_time)
-                        },
-                        key=f'{payload.user_id}+{payload.page_id}')
+                        value=payload.get_value(),
+                        key=str(payload.get_key()))
 
     return {'message': "OK"}

@@ -13,9 +13,7 @@ router = APIRouter()
 async def post_click_event(payload: ClickElement,
                            kafka_producer: KafkaProducer = Depends(get_kafka_producer)):
     kafka_producer.send(topic=kafka_topics[ClickElement],
-                        value={
-                            'event_time': str(payload.event_time)
-                        },
-                        key=f'{payload.user_id}+{payload.element_id}')
+                        value=payload.get_value(),
+                        key=str(payload.get_key()))
 
     return {'message': "OK"}
