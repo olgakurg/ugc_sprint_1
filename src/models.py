@@ -11,7 +11,7 @@ class Event(BaseModel):
         return getattr(self, self.__key_field__)
 
     def get_value(self):
-        return {k: str(v) for k, v in self.dict().items() if v is not None and k != self.__key_field__}
+        return {k: str(v) for k, v in self.dict().items() if v is not None}
 
 
 class MovieProgress(Event):
