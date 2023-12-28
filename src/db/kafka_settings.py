@@ -2,14 +2,13 @@ import logging
 
 from confluent_kafka.admin import AdminClient, NewTopic
 from core.config import Settings
-from models import MovieProgress, MovieRes, ClickElement, FilterQuery, PageDuration
 
 kafka_topics = {
-    MovieProgress: "some_topic",
-    MovieRes: "some_topic",
-    ClickElement: "some_topic",
-    FilterQuery: "some_topic",
-    PageDuration: "some_topic",
+    "MovieProgress": "some_topic",
+    "MovieRes": "some_topic",
+    "ClickElement": "some_topic",
+    "FilterQuery": "some_topic",
+    "PageDuration": "some_topic",
 }
 
 

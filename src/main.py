@@ -6,7 +6,7 @@ from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 from kafka3 import KafkaProducer
 
-from api.v1 import movies_progress, click_event, page_duration, filter_query, movie_res
+from api.v1 import kafka_producer
 from core.config import Settings
 from db import kafka
 from db.kafka_settings import create_topics
@@ -32,8 +32,4 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-app.include_router(movies_progress.router, prefix='/api/v1/movies_progress')
-app.include_router(click_event.router, prefix='/api/v1/click_event')
-app.include_router(movie_res.router, prefix='/api/v1/movie_res')
-app.include_router(page_duration.router, prefix='/api/v1/page_duration')
-app.include_router(filter_query.router, prefix='/api/v1/filter_query')
+app.include_router(kafka_producer.router, prefix='/api/v1/send_to_kafka')
