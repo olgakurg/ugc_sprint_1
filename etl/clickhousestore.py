@@ -7,7 +7,7 @@ from store import BaseStorage
 class ClickHouse:
 
     def __init__(self, host, port):
-        self.click_host = f"{host}:{port}"
+        self.click_host = f"http://{host}:{port}"
 
     async def write(self, table, data):
 
@@ -19,15 +19,13 @@ class ClickHouse:
         else:
             return
 
-        print("PRINT")
-        print(column)
-        print(data)
-
         async with ClientSession() as s:
             client = ChClient(s, url=self.click_host)
             query = (
-                f'INSERT INTO content.{table} ({column}) '
-                f'VALUES %s ON CONFLICT (id) DO NOTHING'
+                f"INSERT INTO default.messages (*) "
+                f"VALUES %s"
             )
 
-            await client.execute(query, data)
+            print(query)
+
+            await client.execute(query, *data)
