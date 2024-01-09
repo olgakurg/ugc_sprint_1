@@ -22,8 +22,8 @@ class Transport:
         data_stream = []
 
         async for msg in await self.source.read(topic):
-            data_stream.append(msg.value)
-
+            data_stream.extend(msg.value)
+            # print(data_stream)
             # if len(data_stream) >= settings.batch_size:
             await self.storage.write(topic, data_stream)
 

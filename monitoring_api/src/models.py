@@ -1,3 +1,4 @@
+from uuid import UUID
 from datetime import datetime
 
 from pydantic import BaseModel
@@ -39,3 +40,11 @@ class PageDuration(BaseModel):
     event_time: datetime
     page_id: str
     duration: int
+
+
+class Event(BaseModel):
+    user_id: UUID
+    event_type: str
+    event_time: datetime
+    movie_id: UUID
+    value: int

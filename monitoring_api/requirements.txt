@@ -4,8 +4,6 @@ pydantic_settings==2.1.0
 uvicorn==0.12.2
 uvloop==0.17.0
 orjson==3.9.10
-kafka-python3==3.0.0
-confluent-kafka==2.3.0
-
+aiokafka==0.10.0
 
 
