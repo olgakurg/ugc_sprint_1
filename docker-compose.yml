@@ -1,6 +1,36 @@
 version: "3.9"
 
 services:
+
+  ugc_api:
+    build:
+      context: ./src
+    env_file:
+      - src/.env
+    container_name: ugc_api
+    volumes:
+      - ./src/:/var/www/ugc_api
+    ports:
+      - 8000:8000
+    restart: always
+
+  etl:
+    container_name: etl
+    volumes:
+      - ./etl:/etl
+    env_file: ./config/etl/.env.etl
+    build:
+      context: .
+      dockerfile: dockerfiles/etl/docker_etl.conf
+    depends_on:
+      - kafka1
+      - kafka2
+      - kafka3
+      - clickhouse-node1
+      - clickhouse-node2
+      - clickhouse-node3
+      - clickhouse-node4
+
   kafka1:
     container_name: kafka1
     image: custom/kafka:3.6.1
@@ -48,20 +78,77 @@ services:
     environment:
       - KAFKA_CLUSTERS_0_BOOTSTRAP_SERVERS=kafka1:9092,@kafka2:9092,@kafka3:9092
       - KAFKA_CLUSTERS_0_NAME=ugc
+    depends_on:
+      - kafka1
+      - kafka2
+      - kafka3
 
-  clickhouse:
-    image: clickhouse/clickhouse-server
-    user: "101:101"
-    container_name: clickhouse
-    hostname: clickhouse
-    volumes:
-      - ./config/clickhouse/config.xml:/etc/clickhouse-server/config.d/config.xml
-      - ./config/clickhouse/users.xml:/etc/clickhouse-server/users.d/users.xml
+  zookeeper:
+    image: zookeeper:3.8
+    container_name: zookeeper
+    hostname: zookeeper
+
+  clickhouse-node1:
+    image: clickhouse/clickhouse-server:latest
+    container_name: clickhouse-node1
+    hostname: clickhouse-node1
     ports:
-      - "127.0.0.1:8123:8123"
-      - "127.0.0.1:9000:9000"
+      - "8123:8123"
+      - "9000:9000"
+    volumes:
+      - ./config/clickhouse/init/node1_shard.sql:/docker-entrypoint-initdb.d/node1_shard.sql
+      - ./config/clickhouse/data/node1:/etc/clickhouse-server
+      - clickhouse_data01:/var/lib/clickhouse
+    depends_on:
+      - zookeeper
+
+  clickhouse-node2:
+    image: clickhouse/clickhouse-server:latest
+    container_name: clickhouse-node2
+    hostname: clickhouse-node2
+    ports:
+      - "8124:8123"
+      - "9001:9000"
+    volumes:
+      - ./config/clickhouse/init/node2_replica.sql:/docker-entrypoint-initdb.d/node2_replica.sql
+      - ./config/clickhouse/data/node2:/etc/clickhouse-server
+      - clickhouse_data02:/var/lib/clickhouse
+    depends_on:
+      - zookeeper
+
+  clickhouse-node3:
+    image: clickhouse/clickhouse-server:latest
+    container_name: clickhouse-node3
+    hostname: clickhouse-node3
+    ports:
+      - "8125:8123"
+      - "9002:9000"
+    volumes:
+      - ./config/clickhouse/init/node3_shard.sql:/docker-entrypoint-initdb.d/node3_shard.sql
+      - ./config/clickhouse/data/node3:/etc/clickhouse-server
+      - clickhouse_data03:/var/lib/clickhouse
+    depends_on:
+      - zookeeper
+
+  clickhouse-node4:
+    image: clickhouse/clickhouse-server:latest
+    container_name: clickhouse-node4
+    hostname: clickhouse-node4
+    ports:
+      - "8126:8123"
+      - "9003:9000"
+    volumes:
+      - ./config/clickhouse/init/node4_replica.sql:/docker-entrypoint-initdb.d/node4_replica.sql
+      - ./config/clickhouse/data/node4:/etc/clickhouse-server
+      - clickhouse_data04:/var/lib/clickhouse
+    depends_on:
+      - zookeeper
 
 volumes:
   kafka1_data:
   kafka2_data:
   kafka3_data:
+  clickhouse_data01:
+  clickhouse_data02:
+  clickhouse_data03:
+  clickhouse_data04:

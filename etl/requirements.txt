@@ -1,0 +1,7 @@
+pydantic==2.3.0
+pydantic_settings==2.0.3
+aiokafka==0.10.0
+aiochclient==2.5.1
+aiohttp==3.9.1
+loguru==0.7.0
+backoff==2.2.1
