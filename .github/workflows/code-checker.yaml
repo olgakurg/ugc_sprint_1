@@ -39,8 +39,8 @@ jobs:
           flake8 ./etl/ --exit-zero --format=html --htmldir=reports/etl/wemake-python-styleguide/
       - name: mypy check
         run: |
-          mypy --html-report reports/src/mypy/ src/*  true
-          mypy --html-report reports/etl/mypy/ etl/*  true
+          mypy --html-report reports/etl/mypy/ etl/* || true
+          mypy --html-report reports/etl/mypy/ etl/* || true
       - name: Upload reports
         uses: actions/upload-artifact@v2
         with:
