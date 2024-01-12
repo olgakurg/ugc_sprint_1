@@ -48,7 +48,7 @@ jobs:
           path: reports/
 
   send_message:
-    name: Senf to telegram
+    name: Send to telegram
     runs-on: ubuntu-latest
     needs: linter
     steps:
@@ -58,3 +58,4 @@ jobs:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
           message: ${{ github.actor }} touch dev branch in repo ${{ github.repository }}
+          document: reports/etl/wemake-python-styleguide/index.html
