@@ -18,9 +18,9 @@ class KafkaMesseger(SouceMessager):
         logger=process_logger
 
     )
-    async def read(self, source):
+    async def read(self, topic: str) -> AIOKafkaConsumer:
         consumer = AIOKafkaConsumer(
-            source,
+            topic,
             value_deserializer=lambda m: json.loads(m.decode('utf-8')),
             key_deserializer=lambda m: m.decode('utf-8'),
             bootstrap_servers=self.brocker,
