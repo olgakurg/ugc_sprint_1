@@ -1,0 +1,74 @@
+{
+  "info": {
+    "_postman_id": "1fbd599f-6bb5-4ac9-9139-c84783af80ae",
+    "name": "ugc_tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "30107252"
+  },
+  "item": [
+    {
+      "name": "post batch",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "user_id",
+            "value": "55555",
+            "type": "text",
+            "disabled": true
+          },
+          {
+            "key": "event_time",
+            "value": "2022-03-01T12:00:00",
+            "type": "text",
+            "disabled": true
+          },
+          {
+            "key": "movie_id",
+            "value": "5555",
+            "type": "text",
+            "disabled": true
+          },
+          {
+            "key": "movie_progress",
+            "value": "50",
+            "type": "text",
+            "disabled": true
+          },
+          {
+            "key": "movie_len",
+            "value": "120",
+            "type": "text",
+            "disabled": true
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "[\r\n{\r\n    \"user_id\": \"random_user_id\",\r\n    \"event_time\": \"2022-01-01T00:00:00\",\r\n    \"movie_id\": \"random_movie_id\",\r\n    \"old_res\": \"50\",\r\n    \"new_res\": \"100\"\r\n},\r\n\r\n{\r\n    \"user_id\": \"random_user_id\",\r\n    \"event_time\": \"2022-01-01T00:00:00\",\r\n    \"movie_id\": \"random_movie_id_1\",\r\n    \"movie_progress\": 50,\r\n    \"movie_len\": 100\r\n}\r\n]",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/v1/send_to_kafka",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "v1",
+            "send_to_kafka"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

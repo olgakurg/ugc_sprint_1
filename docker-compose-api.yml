@@ -1,0 +1,19 @@
+version: "3"
+
+
+services:
+
+  ugc_api:
+    build:
+      context: ./src
+    env_file:
+      - src/.env
+    container_name: ugc_api
+    volumes:
+      - ./src/:/var/www/ugc_api
+    ports:
+      - 8000:8000
+    restart: always
+
+
+
