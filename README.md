@@ -1,5 +1,5 @@
 # Проектная работа 8 спринта
-ссылка на этот репозиторий
+ссылка на этот репозиторий  git@github.com:olgakurg/ugc_sprint_1.git
 
 ### Инструкции по запуску проекта.
 
@@ -12,7 +12,7 @@
   kafka_port=9092
   ```
 
-* etl/.env.etl для запуска etl:
+* etl/.env.etl для запуска ETL:
     ```
   db_address=0.0.0.0
   db_port=8123
@@ -24,8 +24,10 @@
   topics=[movies_progress]
   ```
 
-2. Для развертывания кластеров ClickHouse и Kafka, API и УЕД необходимо выполнить в консоли команду:
-   '''docker-compose up --build -d'''
+2. Для развертывания кластеров ClickHouse и Kafka, API и ETL необходимо выполнить в консоли команду:
+   '''
+   docker-compose up --build -d
+   '''
 
 
 
