@@ -1,6 +1,5 @@
 import asyncio
 
-
 from transport import Transport
 from db.clickhousestore import ClickHouse
 from datastream.sourcekafka import KafkaMesseger

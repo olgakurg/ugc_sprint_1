@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS replica.events (
     event_type String(100)
 ) 
 Engine=ReplicatedMergeTree('/clickhouse/tables/shard2/events', 'replica_2')
-PARTITION BY user_id ORDER BY event_time;
+PARTITION BY event_type ORDER BY event_time;
 
 
 
