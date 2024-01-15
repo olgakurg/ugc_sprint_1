@@ -1,5 +1,10 @@
-producer = None
+from functools import lru_cache
+
+from aiokafka import AIOKafkaProducer
+
+kafka = AIOKafkaProducer | None
 
 
-def get_kafka_producer():
-    return producer
+@lru_cache()
+async def get_kafka_producer(settings) -> AIOKafkaProducer:
+    yield kafka
