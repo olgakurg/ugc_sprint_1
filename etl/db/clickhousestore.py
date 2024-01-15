@@ -10,7 +10,7 @@ from utils.processlogger import process_logger
 
 class ClickHouse(BaseStorage):
 
-    def __init__(self, host, port):
+    def __init__(self, host: str, port: int):
         self.click_host = f"http://{host}:{port}"
 
     @backoff.on_exception(

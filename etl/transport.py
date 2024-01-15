@@ -25,7 +25,7 @@ class Transport:
         self.storage = storage
         self.topics = topics
 
-    async def streammer(self, topic: str):
+    async def streammer(self, topic: str) -> None:
         data_stream = []
 
         process_logger.info(
@@ -50,7 +50,7 @@ class Transport:
                     )
                     data_stream.clear()
 
-    async def create_stream(self):
+    async def create_stream(self) -> None:
         workers = []
 
         for topic in self.topics:
