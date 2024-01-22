@@ -1,15 +1,18 @@
+GNU nano 6.2                                                                                 docker-compose-api_2.yml
 version: "3"
 
 services:
 
   api:
     build:
-      context: ./src
+      context: ./src_2
     env_file:
-      - src/.env
+      - src_2/.env
     container_name: api
+    expose:
+      - "80"
     volumes:
-      - ./src/:/var/www/ugc_api
+      - ./src_2/:/var/www/ugc_api
     restart: always
 
   filebeat:
@@ -17,10 +20,10 @@ services:
       context: ./filebeat
     container_name: filebeat
     volumes:
-      - ./src/logs/:/src/logs/
+      - ./src_2/logs/:/src/logs/
+      - ./tmp/logs/nginx/:/var/log/nginx/
     depends_on:
       - api
-
 
   nginx:
     image: nginx:1.25
