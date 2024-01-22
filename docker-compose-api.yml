@@ -8,6 +8,8 @@ services:
     env_file:
       - src/.env
     container_name: api
+    expose:
+      - "80"
     volumes:
       - ./src/:/var/www/ugc_api
     restart: always
@@ -18,9 +20,9 @@ services:
     container_name: filebeat
     volumes:
       - ./src/logs/:/src/logs/
+      - ./tmp/logs/nginx/:/var/log/nginx/
     depends_on:
       - api
-
 
   nginx:
     image: nginx:1.25
@@ -33,3 +35,5 @@ services:
       - ./tmp/logs/nginx/:/var/log/nginx
     depends_on:
       - api
+
+

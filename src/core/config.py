@@ -8,8 +8,8 @@ class Settings(BaseSettings):
     kafka_port: int
     sentry_dsn: str
     sentry_enable: bool
-    sentry_tracers_rate: int = 0.5
-    sntry_profile_rate: int = 0.5
+    sentry_tracers_rate: float = 0.5
+    sntry_profile_rate: float = 0.5
 
 
 settings = Settings(_env_file='.env')

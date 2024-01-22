@@ -1,25 +1,23 @@
-
-import logging
-import os
 from contextlib import asynccontextmanager
 
 import sentry_sdk
-from fastapi import FastAPI, Request, status, Header
+from fastapi import FastAPI, Request, status
 from fastapi.responses import ORJSONResponse
 
 from api.v1 import kafka_sender
 from core.config import Settings
+from core.log_middleware import LogMiddleware
 from db.kafka_settings import create_topics
 
 settings = Settings()
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-os.makedirs('logs', exist_ok=True)
-log_handler = logging.FileHandler("logs/ugc_log.log", mode='w')
-log_formatter = logging.Formatter("%(name)s %(asctime)s %(levelname)s %(message)s")
-log_handler.setFormatter(log_formatter)
-logger.addHandler(log_handler)
+# logger = logging.getLogger(__name__)
+# logger.setLevel(logging.INFO)
+# os.makedirs('logs', exist_ok=True)
+# log_handler = logging.FileHandler("logs/ugc_log.log", mode='w')
+# log_formatter = logging.Formatter("%(name)s %(asctime)s %(levelname)s %(message)s")
+# log_handler.setFormatter(log_formatter)
+# logger.addHandler(log_handler)
 
 if settings.sentry_enable:
     sentry_sdk.init(
@@ -43,7 +41,7 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-
+app.add_middleware(LogMiddleware)
 @app.middleware('http')
 async def before_request(request: Request, call_next):
     response = await call_next(request)
@@ -53,15 +51,15 @@ async def before_request(request: Request, call_next):
     return response
 
 
-@app.get("/sentry-debug")
-async def trigger_error(x_request_id: str = Header(None)):
-    logger.info(f'get request id {x_request_id} to sentry-debug route')
-    try:
-        division_by_zero = 1 / 0
-        logger.info(f'get request id {x_request_id} to sentry-debug route has s result {division_by_zero}')
-        return division_by_zero
-    except ZeroDivisionError as e:
-        logger.error(f'{e} during handling {x_request_id}')
+# @app.get("/sentry-debug")
+# async def trigger_error(x_request_id: str = Header(None)):
+#     logger.info(f'get request id {x_request_id} to sentry-debug route')
+#     try:
+#         division_by_zero = 1 / 0
+#         logger.info(f'get request id {x_request_id} to sentry-debug route has s result {division_by_zero}')
+#         return division_by_zero
+#     except ZeroDivisionError as e:
+#         logger.error(f'{e} during handling {x_request_id}')
 
 
 app.include_router(kafka_sender.router, prefix='/api/v1/send_to_kafka')
