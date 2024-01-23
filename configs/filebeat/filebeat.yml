@@ -1,8 +1,8 @@
 filebeat.inputs:
-  - type: filestream
+  - type: log
     enabled: true
     paths:
-      - /src/logs/
+      - /src/logs/*
     json:
       keys_under_root: true
       add_error_key: true
@@ -19,4 +19,4 @@ output.logstash:
   enabled: true
   hosts: [ "logstash:5044" ]
 
-logging.level: debug
+logging.level: error

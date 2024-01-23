@@ -16,7 +16,7 @@ services:
 
   filebeat:
     build:
-      context: ./filebeat
+      context: configs/filebeat
     container_name: filebeat
     volumes:
       - ./src/logs/:/src/logs/

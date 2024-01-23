@@ -32,3 +32,4 @@ class KafkaService:
             await producer.stop()
         except Exception as e:
             logging.error(e)
+

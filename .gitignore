@@ -124,3 +124,8 @@ cython_debug/
 
 # Kafka config
 /config/kafka/.env.kafka*
+
+#Tmp and data
+/tmp/
+/deploy/
+/data/

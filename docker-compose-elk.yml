@@ -6,12 +6,11 @@ services:
     depends_on:
       - elasticsearch
     environment:
-      # XPACK_MONITORING_ENABLED: "false"
       ES_HOST: "elasticsearch:9200"
     ports:
       - "5044:5044/udp"
     volumes:
-      - ./filebeat/logstash.conf:/config/logstash.conf:ro
+      - ./configs/logstash.conf:/config/logstash.conf:ro
     command: logstash -f /config/logstash.conf
 
   elasticsearch:
