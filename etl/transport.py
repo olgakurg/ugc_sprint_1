@@ -1,14 +1,12 @@
 import asyncio
 from uuid import uuid4
-from datetime import datetime
 
 from aiokafka.structs import ConsumerRecord
 
-
-from datastream.sourcemes import SouceMessager
-from utils.processlogger import process_logger
 from config.settings import settings
+from datastream.sourcemes import SouceMessager
 from db.store import BaseStorage
+from utils.processlogger import process_logger
 
 
 class Transport:

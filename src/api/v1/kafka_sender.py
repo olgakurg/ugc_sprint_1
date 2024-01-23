@@ -6,6 +6,7 @@ from services.kafka_service import KafkaService, get_kafka_service
 
 router = APIRouter()
 
+
 @router.post('/', status_code=HTTPStatus.OK)
 async def send_to_kafka(payload: list[MovieProgress | MovieRes | FilterQuery | ClickElement | PageDuration],
                         kafka_service: KafkaService = Depends(get_kafka_service)) -> dict:
