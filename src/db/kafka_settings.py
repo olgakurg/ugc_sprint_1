@@ -4,7 +4,7 @@ from confluent_kafka.admin import AdminClient, NewTopic
 from core.config import Settings
 
 # A dictionary to hold Kafka topics
-KAFKA_TOPICS: {str: str} = {
+KAFKA_TOPICS = {
     "MovieProgress": "some_topic",
     "MovieRes": "some_topic",
     "ClickElement": "some_topic",

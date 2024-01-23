@@ -1,5 +1,5 @@
 from contextlib import asynccontextmanager
-from typing import Generator
+from typing import AsyncGenerator
 
 import sentry_sdk
 from fastapi import FastAPI, Request, status, Header
@@ -22,7 +22,7 @@ if settings.sentry_enable:
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI) -> Generator:
+async def lifespan(app: FastAPI) -> AsyncGenerator:
     """
     Context manager for application lifespan.
 
@@ -68,7 +68,7 @@ app.add_middleware(LogMiddleware)
 
 
 @app.get("/sentry-debug")
-async def trigger_error(x_request_id: str = Header(None)) -> float:
+async def trigger_error(x_request_id: str = Header(None)) -> float | ORJSONResponse:
     """
     Endpoint to trigger an error for testing Sentry.
 
@@ -85,6 +85,7 @@ async def trigger_error(x_request_id: str = Header(None)) -> float:
         return division_by_zero
     except ZeroDivisionError as e:
         logger.error(f'{e} during handling {x_request_id}')
+        return ORJSONResponse(status_code=status.HTTP_409_CONFLICT)
 
 
 app.include_router(kafka_sender.router, prefix='/api/v1/send_to_kafka')
