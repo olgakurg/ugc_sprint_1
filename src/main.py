@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+from typing import Generator
 
 import sentry_sdk
 from fastapi import FastAPI, Request, status, Header
@@ -21,7 +22,16 @@ if settings.sentry_enable:
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(app: FastAPI) -> Generator:
+    """
+    Context manager for application lifespan.
+
+    Args:
+        app (FastAPI): The FastAPI application.
+
+    Yields:
+        None
+    """
     create_topics(settings)
     yield
 
@@ -36,7 +46,17 @@ app = FastAPI(
 
 
 @app.middleware('http')
-async def before_request(request: Request, call_next):
+async def before_request(request: Request, call_next) -> ORJSONResponse:
+    """
+    Middleware to handle request before processing.
+
+    Args:
+        request (Request): The incoming request.
+        call_next: The next middleware or endpoint to call.
+
+    Returns:
+        ORJSONResponse: The response.
+    """
     response = await call_next(request)
     request_id = request.headers.get('X-Request-Id')
     if not request_id:
@@ -48,11 +68,20 @@ app.add_middleware(LogMiddleware)
 
 
 @app.get("/sentry-debug")
-async def trigger_error(x_request_id: str = Header(None)):
+async def trigger_error(x_request_id: str = Header(None)) -> float:
+    """
+    Endpoint to trigger an error for testing Sentry.
+
+    Args:
+        x_request_id (str, optional): The request ID. Defaults to None.
+
+    Returns:
+        float: The result of the division.
+    """
     logger.info(f'get request id {x_request_id} to sentry-debug route')
     try:
         division_by_zero = 1 / 0
-        logger.info(f'get request id {x_request_id} to sentry-debug route has s result {division_by_zero}')
+        logger.info(f'get request id {x_request_id} to sentry-debug route has a result {division_by_zero}')
         return division_by_zero
     except ZeroDivisionError as e:
         logger.error(f'{e} during handling {x_request_id}')

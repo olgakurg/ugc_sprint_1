@@ -3,7 +3,8 @@ import logging
 from confluent_kafka.admin import AdminClient, NewTopic
 from core.config import Settings
 
-kafka_topics = {
+# A dictionary to hold Kafka topics
+KAFKA_TOPICS: {str: str} = {
     "MovieProgress": "some_topic",
     "MovieRes": "some_topic",
     "ClickElement": "some_topic",
@@ -12,18 +13,34 @@ kafka_topics = {
 }
 
 
-def create_topics(settings: Settings):
-    topics = kafka_topics.values()
-    logging.info(f'trying to create topics {topics}')
+def create_topics(settings: Settings) -> None:
+    """
+    Function to create Kafka topics.
+
+    Args:
+        settings (Settings): The settings for the Kafka instance.
+
+    Returns:
+        None
+    """
+    topics = KAFKA_TOPICS.values()
+    logging.info(f'Trying to create topics {topics}')
     try:
-        a = AdminClient({'bootstrap.servers': '{}:{}'.format(settings.kafka_host, settings.kafka_port)})
-        new_topics = [NewTopic(topic, num_partitions=3, replication_factor=1) for topic in topics]
-        fs = a.create_topics(new_topics)
+        admin_client = AdminClient({
+            'bootstrap.servers': f'{settings.kafka_host}:{settings.kafka_port}'
+        })
+        new_topics = [
+            NewTopic(topic, num_partitions=3, replication_factor=1)
+            for topic in topics
+        ]
+        fs = admin_client.create_topics(new_topics)
     except Exception as e:
-        logging.info(f"Failed to connect with kafka instance with {e}")
+        logging.info(f"Failed to connect with Kafka instance with {e}")
+        return
+
     for topic, f in fs.items():
         try:
-            f.result()  # The result itself is None
-            logging.info("Topic {} created".format(topic))
+            f.result()
+            logging.info(f"Topic {topic} created")
         except Exception as e:
-            logging.info("Failed to create topic {}: {}".format(topic, e))
+            logging.info(f"Failed to create topic {topic}: {e}")
