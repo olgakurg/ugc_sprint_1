@@ -6,6 +6,10 @@ class Settings(BaseSettings):
     project_name: str
     kafka_host: str
     kafka_port: int
+    sentry_dsn: str
+    sentry_enable: bool
+    sentry_tracers_rate: float = 0.5
+    sntry_profile_rate: float = 0.5
 
 
 settings = Settings(_env_file='.env')

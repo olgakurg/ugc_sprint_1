@@ -15,9 +15,12 @@ kafka_topics = {
 def create_topics(settings: Settings):
     topics = kafka_topics.values()
     logging.info(f'trying to create topics {topics}')
-    a = AdminClient({'bootstrap.servers': '{}:{}'.format(settings.kafka_host, settings.kafka_port)})
-    new_topics = [NewTopic(topic, num_partitions=3, replication_factor=1) for topic in topics]
-    fs = a.create_topics(new_topics)
+    try:
+        a = AdminClient({'bootstrap.servers': '{}:{}'.format(settings.kafka_host, settings.kafka_port)})
+        new_topics = [NewTopic(topic, num_partitions=3, replication_factor=1) for topic in topics]
+        fs = a.create_topics(new_topics)
+    except Exception as e:
+        logging.info(f"Failed to connect with kafka instance with {e}")
     for topic, f in fs.items():
         try:
             f.result()  # The result itself is None
