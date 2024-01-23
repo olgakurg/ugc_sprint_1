@@ -13,7 +13,7 @@ events = (
 def data_generator(batch_size: int) -> list:
     data = [
         (
-            uuid4(),
+            str(uuid4()),
             str(uuid4()),
             random.randint(0, 1000),
             datetime(2024, 1, 1, hour=0, minute=0, second=0),
