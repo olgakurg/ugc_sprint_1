@@ -2,7 +2,10 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(extra='ignore')
+    """
+    Settings model for the application.
+    """
+    model_config: SettingsConfigDict = SettingsConfigDict(extra='ignore')
     project_name: str
     kafka_host: str
     kafka_port: int
@@ -12,4 +15,4 @@ class Settings(BaseSettings):
     sntry_profile_rate: float = 0.5
 
 
-settings = Settings(_env_file='.env')
+settings: Settings = Settings(_env_file='.env')
