@@ -33,8 +33,8 @@ jobs:
           pip install types-protobuf
       - name: flake8 and wemake check
         run: |
-          flake8 ./src/ --format=html --htmldir=reports/src/wemake-python-styleguide/ || true
-          flake8 ./etl/ --format=html --htmldir=reports/etl/wemake-python-styleguide/ || true
+          flake8 ./src/ --exit-zero --format=html --htmldir=reports/src/wemake-python-styleguide/
+          flake8 ./etl/ --exit-zero --format=html --htmldir=reports/etl/wemake-python-styleguide/
       - name: mypy check
         run: |
           mypy --html-report reports/src/mypy/ src/*/*.py || true
