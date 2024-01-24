@@ -3,7 +3,7 @@ const conn = new Mongo();
 const db = conn.getDB(dbName);
 const collectionName = "content";
 
-const collectionSettings = {
+const collection = {
     name: "content",
     shardKey: "relation_uuid",
     indexFields: [
@@ -16,7 +16,7 @@ sh.enableSharding(dbName);
 const shardKey = collection.shardKey;
 const indexFields = collection.indexFields;
 
-db.createCollection(collectionName)
+db.createCollection(collectionName);
 
 sh.shardCollection(`${dbName}.${collectionName}`, { [shardKey]: "hashed" });
 
