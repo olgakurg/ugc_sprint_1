@@ -5,6 +5,7 @@ from tqdm import tqdm
 
 from db.clickhousestore import ClickHouse
 from db.vertica import Vertica
+from db.mongosrore import Mongo
 from settings.settings import settings
 from utils.data_generator import data_generator
 from utils.timer import timer
@@ -13,7 +14,7 @@ from utils.timer import timer
 @timer(10)
 def inser_to_db(db, data: list):
 
-    column = ['id', 'user_id', 'value', 'event_time', 'event_type']
+    column = ['id', 'relation_uuid', 'object_type', 'timestamp', 'ontent']
     db.write(data, settings.event_table, column)
 
 
@@ -26,7 +27,7 @@ def get_from_db(db, limit: int):
 def write_benchmark(func, test_db: list) -> dict[str, list]:
 
     results = {'batch_value': []}
-    for batch_value in tqdm(range(1, 2000, 1000)):
+    for batch_value in tqdm(range(1, 1000000, 10000)):
         data = data_generator(batch_value)
         results['batch_value'].append(batch_value)
 
@@ -44,7 +45,7 @@ def write_benchmark(func, test_db: list) -> dict[str, list]:
 def read_benchmark(func, test_db: list) -> dict[str, list]:
 
     results = {'limit': []}
-    for limit in tqdm(range(1, 2000, 1000)):
+    for limit in tqdm(range(1, 1000000, 10000)):
 
         results['limit'].append(limit)
 
@@ -85,8 +86,16 @@ if __name__ == '__main__':
         settings.vertica_db_name
     )
 
-    write_res = write_benchmark(inser_to_db, [ch_store, vertica_store])
+    mongostore = Mongo(
+        settings.mongo_host,
+        settings.mongo_port,
+        settings.mongo_db_name
+    )
+
+    write_res = write_benchmark(
+        inser_to_db, [ch_store, vertica_store, mongostore])
     plot(write_res)
 
-    read_res = read_benchmark(get_from_db, [ch_store, vertica_store])
+    read_res = read_benchmark(
+        get_from_db, [ch_store, vertica_store, mongostore])
     plot(read_res)
