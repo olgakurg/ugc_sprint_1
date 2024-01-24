@@ -1,0 +1,11 @@
+fastapi==0.103.1
+orjson==3.9.2
+pydantic==2.3.0
+pydantic-settings==2.0.3
+uvicorn==0.12.2
+python-dotenv==1.0.0
+httptools==0.6.0
+uvloop==0.17.0
+wheel==0.41.2
+gunicorn==21.2.0
+motor==3.3.2
