@@ -25,10 +25,17 @@
   ```
 
 2. Для развертывания кластеров ClickHouse и Kafka, API и ETL необходимо выполнить в консоли команду:
-   '''
-   docker-compose up --build -d
-   '''
+    ```
+   - docker-compose -f docker-compose-ugc1.yml up --build -d
+    ```
 
+3. Для запуска апи для работы с пользовательским контентом users_content_api:
 
+    ```
+    - make (для развёртывания сервиса и кластера mongodb)
+    - make db (для инициализации базы данных)
+    ```
+
+4. Результат исследования баз для хранения данных (Vertica, ClickHouse, MongoDb) в диретории benchmarks
 
 
