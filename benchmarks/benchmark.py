@@ -14,7 +14,7 @@ from utils.timer import timer
 @timer(10)
 def inser_to_db(db, data: list):
 
-    column = ['id', 'relation_uuid', 'object_type', 'timestamp', 'ontent']
+    column = ['id', 'relation_uuid', 'object_type', 'timestamp', 'content']
     db.write(data, settings.event_table, column)
 
 
