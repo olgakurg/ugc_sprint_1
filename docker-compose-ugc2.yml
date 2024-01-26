@@ -6,8 +6,6 @@ services:
     build:
       context: .
       dockerfile: dockerfiles/nginx/docker_nginx_proxi_pass.conf
-    volumes:
-      - ./tmp/logs/nginx_2/:/var/log/nginx
     depends_on:
       - users-content-api
     ports:
@@ -22,19 +20,23 @@ services:
       dockerfile: dockerfiles/users_content_api/users_content_api.conf
     depends_on:
       - mongos1
+      - cache
+    ports:
+      - "8001:8001"
     expose:
       - "8001"
 
-  filebeat:
-    build:
-      context: config/filebeat
-    container_name: filebeat
+  cache:
+    image: redis:6.2-alpine
+    command: /bin/sh -c "redis-server --requirepass $$REDIS_PASSWORD"
     volumes:
-      - ./users_content_api/src/logs/:/var/log/users_content_api/
-      - ./tmp/logs/nginx_2/:/var/log/nginx/
-    depends_on:
-      - api
-      -
+      - cache:/data
+    env_file: ./config/redis/.env.redis
+    expose:
+      - "6379"
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+
   mongos1:
     container_name: mongos1
     image: mongo
@@ -214,3 +216,5 @@ volumes:
   mongodb_cluster_router01_config:
   mongodb_cluster_router02_db:
   mongodb_cluster_router02_config:
+
+  cache:

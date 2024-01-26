@@ -5,30 +5,45 @@ from time import time
 from pydantic import Field, BaseModel
 
 
-class ContentObject(BaseModel):
+class Content(BaseModel):
     """
-    model descripted users content data
+    model describes users input content 
 
     """
     relation_uuid: str
-    user_uuid: str
     object_type: str
     timestamp: float = time()
     content: str | int = Field(None)
 
 
-class CreateResponse(BaseModel):
+class InputContent(Content):
     """
-    model descripted respons for post method
+    model describes users input content 
 
     """
-    status: str
+    access_token: str
+
+
+class ContentObject(Content):
+    """
+    model describes users content data
+
+    """
+    user_uuid: str
+
+
+class CreateResponse(BaseModel):
+    """
+    model describes respons for post method
+
+    """
+    detail: str
     _id: str
 
 
 class CountResponse(BaseModel):
     """
-    model descripted respons for counts
+    model describes respons for counts
 
     """
     count: int
@@ -36,7 +51,7 @@ class CountResponse(BaseModel):
 
 class AvgResponse(BaseModel):
     """
-    model descripted respons for avg func
+    model describes respons for avg func
 
     """
     result: float

@@ -1,10 +1,12 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 
 
 class BaseStorage(ABC):
 
-    def write(self, table, data):
+    @abstractmethod
+    def async_write(self, table, data):
         pass
 
-    def read(self, table, limit):
+    @abstractmethod
+    def async_read(self, table, limit):
         pass

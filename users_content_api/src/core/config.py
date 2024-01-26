@@ -1,7 +1,7 @@
 import os
-
-from dotenv import load_dotenv
+from logging import config as logging_config
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -16,11 +16,12 @@ class Settings(BaseSettings):
     uc_host: str = '0.0.0.0'
     uc_port: int = 27019
     uc_database: str = 'someDb'
+    redis_host: str = '127.0.0.1'
+    redis_port: int = 6379
+    redis_password: str = 'REDIS_PASSWORD'
 
-    log_dir: str = './logs/'
-    log_file: str = 'api.log'
-    log_size: int = 2000
-    log_backup_num: int = 5
+    jwt_secret_key: str = 'JWT_SECRET_KEY'
+    jwt_algorithm: str = 'JWT_ALGORITHM'
 
     model_config = SettingsConfigDict(
         env_file='.env',
