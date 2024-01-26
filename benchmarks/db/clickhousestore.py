@@ -37,7 +37,7 @@ class ClickHouse(BaseStorage):
 
         return data
 
-    def write(self, data: list, table: str, column: list) -> bool | None:
+    def write(self, table: str, column: list, data: list) -> bool | None:
 
         asyncio.run(self.async_write(data))
 

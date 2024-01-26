@@ -24,7 +24,7 @@ class Mongo(BaseStorage):
 
         return result
 
-    def write(self, data: list, table: str, column: list) -> bool | None:
+    def write(self, table: str, column: list, data: list) -> bool | None:
 
         documents = [dict(zip(column, item)) for item in data]
 

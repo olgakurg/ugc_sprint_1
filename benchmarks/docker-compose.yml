@@ -2,6 +2,17 @@ version: "3.9"
 
 services:
 
+  postgres-benchmark:
+    container_name: postgres-benchmark
+    image: postgres:14.8-alpine3.18
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+      - ./config/postgres/pg-setup.sql:/docker-entrypoint-initdb.d/pg-setup.sql
+    env_file: ./config/postgres/.env.db
+    restart: always
+    ports:
+      - "5432:5432"
+
   zookeeper:
     image: zookeeper:3.8
     container_name: zookeeper
@@ -257,3 +268,5 @@ volumes:
   mongodb_cluster_router01_config:
   mongodb_cluster_router02_db:
   mongodb_cluster_router02_config:
+
+  pgdata:
