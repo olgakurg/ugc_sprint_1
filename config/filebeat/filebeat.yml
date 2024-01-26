@@ -2,11 +2,11 @@ filebeat.inputs:
   - type: log
     enabled: true
     paths:
-      - /var/log/ugc_api/*
+      - /var/log/users_content_api/*
     json:
       keys_under_root: true
       add_error_key: true
-    tags: [ "ugc_app" ]
+    tags: [ "users_content_api" ]
 
   - type: log
     enabled: true
@@ -15,16 +15,7 @@ filebeat.inputs:
     json:
       keys_under_root: true
       add_error_key: true
-    tags: [ "ugc_nginx" ]
-
-  - type: log
-    enabled: true
-    paths:
-      - /var/log/etl/*
-    json:
-      keys_under_root: true
-      add_error_key: true
-    tags: [ "etl" ]
+    tags: [ "users_content_nginx" ]
 
 output.logstash:
   enabled: true
