@@ -1,87 +1,51 @@
 version: "3.9"
 
 services:
-
-  postgres-benchmark:
-    container_name: postgres-benchmark
-    image: postgres:14.8-alpine3.18
-    volumes:
-      - ./pgdata:/var/lib/postgresql/data
-      - ./config/postgres/pg-setup.sql:/docker-entrypoint-initdb.d/pg-setup.sql
-    env_file: ./config/postgres/.env.db
+  nginx-proxi-pass:
     restart: always
-    ports:
-      - "5432:5432"
-
-  zookeeper:
-    image: zookeeper:3.8
-    container_name: zookeeper
-    hostname: zookeeper
-
-  clickhouse-node1-benchmark:
-    image: clickhouse/clickhouse-server:latest
-    container_name: clickhouse-node1-benchmark
-    hostname: clickhouse-node1
-    ports:
-      - "8123:8123"
-      - "9000:9000"
-    volumes:
-      - ./config/clickhouse/init/node1_shard.sql:/docker-entrypoint-initdb.d/node1_shard.sql
-      - ./config/clickhouse/data/node1:/etc/clickhouse-server
-      - clickhouse_data01b:/var/lib/clickhouse
+    build:
+      context: .
+      dockerfile: dockerfiles/nginx/docker_nginx_proxi_pass.conf
     depends_on:
-      - zookeeper
-
-  clickhouse-node2-benchmark:
-    image: clickhouse/clickhouse-server:latest
-    container_name: clickhouse-node2-benchmark
-    hostname: clickhouse-node2
+      - users-content-api
     ports:
-      - "8124:8123"
-      - "9001:9000"
+      - "80:80"
+
+  users-content-api:
     volumes:
-      - ./config/clickhouse/init/node2_replica.sql:/docker-entrypoint-initdb.d/node2_replica.sql
-      - ./config/clickhouse/data/node2:/etc/clickhouse-server
-      - clickhouse_data02b:/var/lib/clickhouse
+      - ./users_content_api/src:/app
+    env_file: ./config/users_content_api/.env.users_content_api
+    build:
+      context: .
+      dockerfile: dockerfiles/users_content_api/users_content_api.conf
     depends_on:
-      - zookeeper
-
-  clickhouse-node3-benchmark:
-    image: clickhouse/clickhouse-server:latest
-    container_name: clickhouse-node3-benchmark
-    hostname: clickhouse-node3
+      - mongos1
+      - cache
     ports:
-      - "8125:8123"
-      - "9002:9000"
+      - "8001:8001"
+    expose:
+      - "8001"
+
+  tests:
     volumes:
-      - ./config/clickhouse/init/node3_shard.sql:/docker-entrypoint-initdb.d/node3_shard.sql
-      - ./config/clickhouse/data/node3:/etc/clickhouse-server
-      - clickhouse_data03b:/var/lib/clickhouse
+      - ./tests:/tests
+    env_file: ./config/tests/.env.tests
+    build:
+      context: .
+      dockerfile: dockerfiles/docker_tests.conf
     depends_on:
-      - zookeeper
+      - pg-auth
 
-  clickhouse-node4-benchmark:
-    image: clickhouse/clickhouse-server:latest
-    container_name: clickhouse-node4-benchmark
-    hostname: clickhouse-node4
-    ports:
-      - "8126:8123"
-      - "9003:9000"
+  cache:
+    image: redis:6.2-alpine
+    command: /bin/sh -c "redis-server --requirepass $$REDIS_PASSWORD"
     volumes:
-      - ./config/clickhouse/init/node4_replica.sql:/docker-entrypoint-initdb.d/node4_replica.sql
-      - ./config/clickhouse/data/node4:/etc/clickhouse-server
-      - clickhouse_data04b:/var/lib/clickhouse
-    depends_on:
-      - zookeeper
-
-  vertica-benchmark:
-    image: jbfavre/vertica
-    hostname: vertica_benchmark
-    volumes:
-      - ./config/vertica/vertica_init.sql:/docker-entrypoint-initdb.d/vertica_init.sql
-      - vertica_data_b:/home/dbadmin/docker
-    ports:
-      - 5433:5433
+      - cache:/data
+    env_file: ./config/redis/.env.redis
+    expose:
+      - "6379"
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
 
   mongos1:
     container_name: mongos1
@@ -244,12 +208,6 @@ services:
       - ./config/mongo/scripts:/scripts
 
 volumes:
-  clickhouse_data01b:
-  clickhouse_data02b:
-  clickhouse_data03b:
-  clickhouse_data04b:
-  vertica_data_b:
-
   data_mongors1n1:
   data_mongors1n2:
   data_mongors1n3:
@@ -269,4 +227,4 @@ volumes:
   mongodb_cluster_router02_db:
   mongodb_cluster_router02_config:
 
-  pgdata:
+  cache:

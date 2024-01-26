@@ -7,3 +7,4 @@ motor==3.3.2
 matplotlib==3.8.2
 tqdm==4.66.1
 PyQt6==6.6.1
+psycopg2==2.9.9

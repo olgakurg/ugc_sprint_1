@@ -17,7 +17,7 @@ class Vertica(BaseStorage):
 
         }
 
-    def write(self, data: list, table: str, column: list) -> bool | None:
+    def write(self, table: str, column: list, data: list) -> bool | None:
 
         if not data:
             return
@@ -32,6 +32,9 @@ class Vertica(BaseStorage):
                 f'({",".join(column)}) '
                 f'VALUES ({values})'
             )
+            # print(column)
+            # print(query)
+            # print(data)
 
             cursor.executemany(query, data)
 

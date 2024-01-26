@@ -1,7 +1,6 @@
-import string
 import random
-from datetime import datetime, timedelta
-
+import string
+from time import time
 from uuid import uuid4
 
 events = (
@@ -10,14 +9,22 @@ events = (
 )
 
 
+def generate_random_string():
+    length = random.randint(1, 100)
+    letters = string.ascii_lowercase
+    rand_string = ''.join(random.choice(letters) for i in range(length))
+    return rand_string
+
+
 def data_generator(batch_size: int) -> list:
     data = [
         (
             str(uuid4()),
             str(uuid4()),
-            random.randint(0, 1000),
-            datetime(2024, 1, 1, hour=0, minute=0, second=0),
+            str(uuid4()),
             random.choice(events),
+            int(time()),
+            generate_random_string(),
 
 
         ) for i in range(batch_size)

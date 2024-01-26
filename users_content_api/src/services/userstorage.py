@@ -1,9 +1,5 @@
-import uuid
-
-from fastapi import Depends
-
 from db.store import BaseStorage
-from db.mongosrore import Mongo
+from db.mongostore import Mongo
 from scheme.userscontent import ContentObject
 from core.config import settings
 
@@ -23,7 +19,12 @@ class UserStoregeService:
 
         return result
 
-    async def get_count(self, object_type, value, relation_uuid) -> int:
+    async def get_count(
+        self,
+        object_type: str,
+        value: str | int,
+        relation_uuid: str
+    ) -> int:
         result = await self.db.async_count(
             settings.uc_collections,
             object_type,
