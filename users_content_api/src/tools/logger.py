@@ -1,6 +1,10 @@
 import json
 import logging
-from logging import Formatter
+import os
+from logging import Formatter, Logger
+from logging.handlers import RotatingFileHandler
+
+from core.config import settings
 
 
 class JsonFormatter(Formatter):
@@ -20,8 +24,12 @@ class JsonFormatter(Formatter):
         return json.dumps(json_record)
 
 
-logger = logging.root
-handler = logging.StreamHandler()
+if not os.path.exists(settings.log_dir):
+    os.makedirs(settings.log_dir)
+log_path = os.path.join(settings.log_dir, settings.log_file)
+
+logger: Logger = logging.root
+handler = RotatingFileHandler(filename=log_path, maxBytes=settings.log_size, backupCount=settings.log_backup_num)
 handler.setFormatter(JsonFormatter())
 logger.handlers = [handler]
 logger.setLevel(logging.DEBUG)
