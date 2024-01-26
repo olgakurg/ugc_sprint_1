@@ -37,6 +37,6 @@
     - make db (для инициализации базы данных)
     ```
 
-4. Результат исследования баз для хранения данных (Vertica, ClickHouse, MongoDb) в диретории benchmarks
+4. Результат исследования баз для хранения данных (Vertica, ClickHouse, MongoDb, Postgres SQL) в диретории benchmarks
 
 
