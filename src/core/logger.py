@@ -1,7 +1,11 @@
 import logging
-from logging import Formatter, Logger, StreamHandler
+import os
+from logging import Formatter, Logger
+from logging.handlers import RotatingFileHandler
 
 import orjson as json
+
+from .config import settings
 
 
 class JsonFormatter(Formatter):
@@ -32,8 +36,12 @@ class JsonFormatter(Formatter):
         return json.dumps(json_record).decode('utf-8')
 
 
+if not os.path.exists(settings.log_dir):
+    os.makedirs(settings.log_dir)
+log_path = os.path.join(settings.log_dir, settings.log_file)
+
 logger: Logger = logging.root
-handler: StreamHandler = StreamHandler()
+handler = RotatingFileHandler(filename=log_path, maxBytes=settings.log_size, backupCount=settings.log_backup_num)
 handler.setFormatter(JsonFormatter())
 logger.handlers = [handler]
 logger.setLevel(logging.DEBUG)

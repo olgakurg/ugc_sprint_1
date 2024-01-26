@@ -1,7 +1,7 @@
 import os
-from logging import config as logging_config
-from pydantic_settings import BaseSettings, SettingsConfigDict
+
 from dotenv import load_dotenv
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 load_dotenv()
 
@@ -16,6 +16,11 @@ class Settings(BaseSettings):
     uc_host: str = '0.0.0.0'
     uc_port: int = 27019
     uc_database: str = 'someDb'
+
+    log_dir: str = './logs/'
+    log_file: str = 'api.log'
+    log_size: int = 2000
+    log_backup_num: int = 5
 
     model_config = SettingsConfigDict(
         env_file='.env',

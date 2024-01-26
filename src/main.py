@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
 import sentry_sdk
-from fastapi import FastAPI, Request, status, Header
+from fastapi import FastAPI, Request, status, Header, HTTPException
 from fastapi.responses import ORJSONResponse
 
 from api.v1 import kafka_sender
@@ -17,7 +17,7 @@ if settings.sentry_enable:
     sentry_sdk.init(
         dsn=settings.sentry_dsn,
         traces_sample_rate=settings.sentry_tracers_rate,
-        profiles_sample_rate=settings.sntry_profile_rate,
+        profiles_sample_rate=settings.sentry_profile_rate,
     )
 
 
@@ -68,7 +68,7 @@ app.add_middleware(LogMiddleware)
 
 
 @app.get("/sentry-debug")
-async def trigger_error(x_request_id: str = Header(None)) -> float | ORJSONResponse:
+async def trigger_error(x_request_id: str = Header(None)) -> float | None:
     """
     Endpoint to trigger an error for testing Sentry.
 
@@ -85,7 +85,10 @@ async def trigger_error(x_request_id: str = Header(None)) -> float | ORJSONRespo
         return division_by_zero
     except ZeroDivisionError as e:
         logger.error(f'{e} during handling {x_request_id}')
-        return ORJSONResponse(status_code=status.HTTP_409_CONFLICT)
+        raise HTTPException(
+            status_code=HTTPStatus.EXPECTATION_FAILED,
+            detail="can't add this content"
+        )
 
 
 app.include_router(kafka_sender.router, prefix='/api/v1/send_to_kafka')

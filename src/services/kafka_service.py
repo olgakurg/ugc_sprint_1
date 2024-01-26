@@ -5,7 +5,7 @@ from typing import Type, Union
 import orjson
 from aiokafka import AIOKafkaProducer
 from core.config import settings
-from db.kafka_settings import kafka_topics
+from db.kafka_settings import KAFKA_TOPICS
 from models import MovieProgress, MovieRes, FilterQuery, ClickElement, PageDuration
 
 
@@ -47,7 +47,7 @@ class KafkaService:
 
             await producer.start()
             await producer.send_and_wait(
-                topic=kafka_topics[type(event).name],
+                topic=KAFKA_TOPICS[type(event).name],
                 value=event.value,
                 key=event.key
             )
