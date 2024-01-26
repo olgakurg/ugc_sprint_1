@@ -6,6 +6,8 @@ services:
     build:
       context: .
       dockerfile: dockerfiles/nginx/docker_nginx_proxi_pass.conf
+    volumes:
+      - ./tmp/logs/nginx_2/:/var/log/nginx
     depends_on:
       - users-content-api
     ports:
@@ -23,6 +25,16 @@ services:
     expose:
       - "8001"
 
+  filebeat:
+    build:
+      context: config/filebeat
+    container_name: filebeat
+    volumes:
+      - ./users_content_api/src/logs/:/var/log/users_content_api/
+      - ./tmp/logs/nginx_2/:/var/log/nginx/
+    depends_on:
+      - api
+      -
   mongos1:
     container_name: mongos1
     image: mongo
