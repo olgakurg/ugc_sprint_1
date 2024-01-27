@@ -30,26 +30,6 @@ def collection(db):
     return collection
 
 
-# @pytest_asyncio.fixture(scope='function')
-# def fake_engine():
-#     engine = create_engine(settings.dsl_auth_sync)
-#     Base.metadata.create_all(engine)
-#     yield create_async_engine(settings.dsl_auth)
-#     Base.metadata.drop_all(engine)
-
-
-# @pytest_asyncio.fixture(scope='function')
-# async def fake_session(fake_engine):
-
-#     async_sesion_factory = sessionmaker(
-#         fake_engine,
-#         expire_on_commit=False,
-#         class_=AsyncSession
-#     )
-#     async with async_sesion_factory() as session:
-#         yield session
-
-
 @pytest_asyncio.fixture()
 def get_access():
     def inner():
